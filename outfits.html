@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Date Outfits — A Little Surprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --sunset-1: #ff6b6b;
+      --sunset-2: #ee5a24;
+      --sunset-3: #f0932b;
+      --warm-pink: #fd79a8;
+      --soft-coral: #fab1a0;
+      --deep-plum: #2d1b33;
+      --cream: #ffecd2;
+      --text-dark: #2d1b33;
+      --text-light: #fff;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.18);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #2d1b33 0%, #4a2040 30%, #6b2d5b 60%, #4a2040 100%);
+      min-height: 100vh;
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+    /* ── Floating Background ── */
+    .floating-bg {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .floating-bg span {
+      position: absolute;
+      opacity: 0.1;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.1; }
+      90%  { opacity: 0.1; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ── Sections ── */
+    .section {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.2rem;
+      text-align: center;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 50vh;
+      justify-content: center;
+      padding-top: 4rem;
+    }
+    .hero-title {
+      color: var(--cream);
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-style: italic;
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards 0.3s;
+    }
+    .hero-sub {
+      color: var(--soft-coral);
+      font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+      max-width: 480px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards 0.7s;
+    }
+
+    /* ── Countdown ── */
+    .countdown-section { padding-top: 1rem; }
+    .countdown-label {
+      color: var(--soft-coral);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 1s;
+    }
+    .countdown-row {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 1.2s;
+    }
+    .countdown-box {
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.2rem 1.4rem;
+      min-width: 80px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .countdown-box .num {
+      display: block;
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 700;
+      color: var(--text-light);
+      line-height: 1;
+    }
+    .countdown-box .unit {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--soft-coral);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 0.3rem;
+    }
+
+    /* ── Weather Widget ── */
+    .weather-section { padding-top: 2.5rem; }
+    .weather-card {
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.6rem 2rem;
+      max-width: 360px;
+      width: 100%;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 1.5s;
+    }
+    .weather-title {
+      color: var(--soft-coral);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .weather-main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .weather-icon { font-size: 3rem; }
+    .weather-temp {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+    .weather-desc {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+      margin-top: 0.6rem;
+    }
+    .weather-loading {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.9rem;
+    }
+
+    /* ── Excitement Game ── */
+    .game-section {
+      padding-top: 3rem;
+      padding-bottom: 1rem;
+    }
+    .game-title {
+      color: var(--text-light);
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      margin-bottom: 0.4rem;
+    }
+    .game-sub {
+      color: var(--soft-coral);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      max-width: 400px;
+    }
+
+    .tap-heart {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--sunset-1), var(--warm-pink));
+      font-size: 3.5rem;
+      cursor: pointer;
+      box-shadow: 0 8px 40px rgba(253, 121, 168, 0.4);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      animation: heartPulse 1.5s ease-in-out infinite;
+      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tap-heart:active {
+      transform: scale(0.92);
+      box-shadow: 0 4px 20px rgba(253, 121, 168, 0.5);
+      animation: none;
+    }
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .meter-container {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 2rem;
+    }
+    .meter-label {
+      color: var(--cream);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      min-height: 1.4rem;
+      transition: all 0.3s ease;
+    }
+    .meter-track {
+      width: 100%;
+      height: 14px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .meter-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 20px;
+      background: linear-gradient(90deg, var(--sunset-1), var(--sunset-3), #00b894);
+      transition: width 0.3s ease;
+      box-shadow: 0 0 12px rgba(255, 107, 107, 0.5);
+    }
+    .meter-pct {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.75rem;
+      margin-top: 0.3rem;
+    }
+    .tap-count-burst {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--warm-pink);
+      animation: burstFloat 0.7s ease forwards;
+    }
+    @keyframes burstFloat {
+      0%   { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-80px) scale(1.4); }
+    }
+
+    /* ── Outfit Cards ── */
+    .outfits-section {
+      padding-top: 2rem;
+      padding-bottom: 4rem;
+    }
+    .outfits-title {
+      color: var(--text-light);
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      margin-bottom: 1.5rem;
+    }
+    .outfits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      max-width: 900px;
+      width: 100%;
+    }
+    .outfit-card {
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem 1.6rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.6s ease;
+      opacity: 1;
+    }
+    .outfit-card.locked {
+      filter: blur(4px) grayscale(0.6);
+      opacity: 0.4;
+      pointer-events: none;
+      transform: scale(0.95);
+    }
+    .outfit-card.revealed {
+      filter: none;
+      opacity: 1;
+      transform: scale(1);
+      animation: cardReveal 0.6s ease forwards;
+      box-shadow: 0 12px 40px rgba(253, 121, 168, 0.2);
+    }
+    @keyframes cardReveal {
+      0%   { opacity: 0; transform: translateY(30px) scale(0.9); }
+      60%  { transform: translateY(-5px) scale(1.02); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .outfit-card .card-img-wrap {
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      aspect-ratio: 3 / 4;
+      background: rgba(255,255,255,0.05);
+    }
+    .outfit-card .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .outfit-card.revealed:hover .card-img {
+      transform: scale(1.04);
+    }
+    .outfit-card .card-day {
+      color: var(--warm-pink);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .outfit-card h3 {
+      color: var(--text-light);
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+    .outfit-card .card-desc {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .outfit-card .lock-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.5rem;
+      opacity: 0.8;
+      z-index: 2;
+      transition: opacity 0.3s ease;
+    }
+    .outfit-card.revealed .lock-icon { display: none; }
+
+    /* ── Final Message ── */
+    .final-section {
+      padding-bottom: 5rem;
+    }
+    .final-msg {
+      color: var(--warm-pink);
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      font-style: italic;
+      max-width: 500px;
+      line-height: 1.7;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .final-msg.visible { opacity: 1; transform: translateY(0); }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      color: var(--soft-coral);
+      font-size: 0.9rem;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 30px;
+      padding: 0.6rem 1.6rem;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .back-link:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-light);
+    }
+
+    /* ── Mute Toggle ── */
+    .mute-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 200;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: background 0.2s ease, transform 0.2s ease;
+      color: rgba(255,255,255,0.8);
+    }
+    .mute-toggle:hover {
+      background: rgba(255, 255, 255, 0.22);
+      transform: scale(1.1);
+    }
+
+    /* ── Mini-confetti burst ── */
+    .mini-confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 998;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      animation: confettiBurst 0.8s ease forwards;
+    }
+    @keyframes confettiBurst {
+      0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(720deg) scale(0.3); }
+    }
+
+    /* ── Keyframes ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .countdown-box { padding: 0.9rem 1rem; min-width: 68px; }
+      .tap-heart { width: 100px; height: 100px; font-size: 3rem; }
+      .outfit-card { padding: 1.5rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating background -->
+  <div class="floating-bg" id="floating-bg"></div>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="section hero">
+    <h1 class="hero-title">Get Ready, Kanmani...</h1>
+    <p class="hero-sub">
+      Something special is coming. Here's what you'll be wearing
+      when we make some beautiful memories together.
+    </p>
+  </section>
+
+  <!-- ═══════════ COUNTDOWN ═══════════ -->
+  <section class="section countdown-section">
+    <p class="countdown-label">Counting down to the adventure</p>
+    <div class="countdown-row" id="countdown-row">
+      <div class="countdown-box">
+        <span class="num" id="cd-days">--</span>
+        <span class="unit">Days</span>
+      </div>
+      <div class="countdown-box">
+        <span class="num" id="cd-hours">--</span>
+        <span class="unit">Hours</span>
+      </div>
+      <div class="countdown-box">
+        <span class="num" id="cd-mins">--</span>
+        <span class="unit">Minutes</span>
+      </div>
+      <div class="countdown-box">
+        <span class="num" id="cd-secs">--</span>
+        <span class="unit">Seconds</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ WEATHER ═══════════ -->
+  <section class="section weather-section">
+    <div class="weather-card" id="weather-card">
+      <p class="weather-title">Weather at our destination</p>
+      <div id="weather-content">
+        <p class="weather-loading">Checking the skies...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ EXCITEMENT GAME ═══════════ -->
+  <section class="section game-section">
+    <h2 class="game-title">How Excited Are You?</h2>
+    <p class="game-sub">Tap the heart to unlock your date outfits!</p>
+
+    <button class="tap-heart" id="tap-heart">&#x2764;&#xFE0F;</button>
+
+    <div class="meter-container">
+      <p class="meter-label" id="meter-label">Tap to begin!</p>
+      <div class="meter-track">
+        <div class="meter-fill" id="meter-fill"></div>
+      </div>
+      <p class="meter-pct" id="meter-pct">0%</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ OUTFIT CARDS ═══════════ -->
+  <section class="section outfits-section">
+    <h2 class="outfits-title">Your Date Outfits</h2>
+    <div class="outfits-grid" id="outfits-grid">
+
+      <div class="outfit-card locked" id="outfit-1">
+        <span class="lock-icon">&#x1F512;</span>
+        <div class="card-img-wrap">
+          <img class="card-img" src="images/date1-full.png" alt="Date 1 outfit">
+        </div>
+        <p class="card-day">Date 1 &mdash; Golden Hour</p>
+        <h3>Soft Yellow Sundress + White Linen</h3>
+        <p class="card-desc">
+          Her: A lovely yellow sundress with square neckline &mdash;
+          light, elegant, and perfectly warm-toned.
+          Him: A crisp white linen shirt paired with beige trousers.
+          Matching earthy tones for a dreamy evening together.
+        </p>
+      </div>
+
+      <div class="outfit-card locked" id="outfit-2">
+        <span class="lock-icon">&#x1F512;</span>
+        <div class="card-img-wrap">
+          <img class="card-img" src="images/date2.png" alt="Date 2 outfit">
+        </div>
+        <p class="card-day">Date 2 &mdash; Daytime Stroll</p>
+        <h3>Minimal White Slip + Olive Polo</h3>
+        <p class="card-desc">
+          Her: A clean white slip dress &mdash; effortless,
+          minimal, and oh-so-chic. Pair with delicate earrings.
+          Him: An olive green polo with beige chinos.
+          Easy, comfortable, and perfectly coordinated for a day out.
+        </p>
+      </div>
+
+      <div class="outfit-card locked" id="outfit-3">
+        <span class="lock-icon">&#x1F512;</span>
+        <div class="card-img-wrap">
+          <img class="card-img" src="images/date3.png" alt="Date 3 outfit">
+        </div>
+        <p class="card-day">Date 3 &mdash; Dreamy Evening</p>
+        <h3>Lace Gown + Chambray Shirt</h3>
+        <p class="card-desc">
+          Her: A stunning white lace-and-chiffon flowing gown &mdash;
+          the kind that makes time stop. Romantic, elegant, unforgettable.
+          Him: A relaxed chambray shirt with khaki shorts,
+          keeping it cool while she steals the spotlight.
+        </p>
+      </div>
+
+      <div class="outfit-card locked" id="outfit-4">
+        <span class="lock-icon">&#x1F512;</span>
+        <div class="card-img-wrap">
+          <img class="card-img" src="images/date4.png" alt="Date 4 outfit">
+        </div>
+        <p class="card-day">Date 4 &mdash; The Grand Finale</p>
+        <h3>Maroon Satin Dress + Matching Shirt</h3>
+        <p class="card-desc">
+          Her: A jaw-dropping maroon satin cowl-neck dress &mdash;
+          fitted, bold, and absolutely showstopping. Add a delicate necklace.
+          Him: A matching deep maroon shirt with grey trousers
+          and a sleek watch. Power couple energy on full display.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════ FINAL MESSAGE ═══════════ -->
+  <section class="section final-section">
+    <p class="final-msg" id="final-msg">
+      Pack your bags and your prettiest smile, Kanmani.
+      This trip is going to be our favourite memory yet. &hearts;
+    </p>
+    <a href="index.html" class="back-link" id="back-link" style="opacity:0; pointer-events:none;">&larr; Back to the surprise</a>
+  </section>
+
+  <button class="mute-toggle" id="mute-toggle" title="Toggle sound">&#x1F50A;</button>
+
+  <script>
+    /* ================================================================
+       FLOATING BACKGROUND
+       ================================================================ */
+    (function createFloaters() {
+      var container = document.getElementById('floating-bg');
+      var items = ['\u2665', '\u2661', '\u2764\uFE0F', '\uD83D\uDC95', '\uD83C\uDF3A', '\uD83C\uDF1F', '\u2728'];
+      for (var i = 0; i < 22; i++) {
+        var span = document.createElement('span');
+        span.textContent = items[Math.floor(Math.random() * items.length)];
+        span.style.left = Math.random() * 100 + '%';
+        span.style.animationDuration = (10 + Math.random() * 14) + 's';
+        span.style.animationDelay = (Math.random() * 12) + 's';
+        span.style.fontSize = (0.8 + Math.random() * 1.4) + 'rem';
+        container.appendChild(span);
+      }
+    })();
+
+    /* ================================================================
+       COUNTDOWN — March 26, 2026
+       ================================================================ */
+    var TARGET_DATE = new Date('2026-03-26T00:00:00+05:30');
+
+    function tickCountdown() {
+      var now = new Date();
+      var diff = TARGET_DATE - now;
+
+      if (diff <= 0) {
+        document.getElementById('cd-days').textContent = '0';
+        document.getElementById('cd-hours').textContent = '0';
+        document.getElementById('cd-mins').textContent = '0';
+        document.getElementById('cd-secs').textContent = '0';
+        return;
+      }
+
+      var days  = Math.floor(diff / 86400000);
+      var hours = Math.floor((diff % 86400000) / 3600000);
+      var mins  = Math.floor((diff % 3600000) / 60000);
+      var secs  = Math.floor((diff % 60000) / 1000);
+
+      document.getElementById('cd-days').textContent = days;
+      document.getElementById('cd-hours').textContent = hours;
+      document.getElementById('cd-mins').textContent = mins < 10 ? '0' + mins : mins;
+      document.getElementById('cd-secs').textContent = secs < 10 ? '0' + secs : secs;
+    }
+
+    tickCountdown();
+    setInterval(tickCountdown, 1000);
+
+    /* ================================================================
+       WEATHER — Open-Meteo with coordinates only
+       ================================================================ */
+    var WMO_MAP = {
+      0:  { desc: 'Clear skies',        icon: '\u2600\uFE0F' },
+      1:  { desc: 'Mostly clear',       icon: '\uD83C\uDF24\uFE0F' },
+      2:  { desc: 'Partly cloudy',      icon: '\u26C5' },
+      3:  { desc: 'Overcast',           icon: '\u2601\uFE0F' },
+      45: { desc: 'Foggy',              icon: '\uD83C\uDF2B\uFE0F' },
+      48: { desc: 'Icy fog',            icon: '\uD83C\uDF2B\uFE0F' },
+      51: { desc: 'Light drizzle',      icon: '\uD83C\uDF26\uFE0F' },
+      53: { desc: 'Drizzle',            icon: '\uD83C\uDF26\uFE0F' },
+      55: { desc: 'Heavy drizzle',      icon: '\uD83C\uDF27\uFE0F' },
+      61: { desc: 'Light rain',         icon: '\uD83C\uDF26\uFE0F' },
+      63: { desc: 'Rain',               icon: '\uD83C\uDF27\uFE0F' },
+      65: { desc: 'Heavy rain',         icon: '\uD83C\uDF27\uFE0F' },
+      80: { desc: 'Light showers',      icon: '\uD83C\uDF26\uFE0F' },
+      81: { desc: 'Showers',            icon: '\uD83C\uDF27\uFE0F' },
+      82: { desc: 'Heavy showers',      icon: '\u26C8\uFE0F' },
+      95: { desc: 'Thunderstorm',       icon: '\u26A1' },
+      96: { desc: 'Thunderstorm + hail',icon: '\u26A1' },
+      99: { desc: 'Severe thunderstorm',icon: '\u26A1' }
+    };
+
+    function renderWeather(data) {
+      var cw = data.current_weather;
+      var code = cw.weathercode;
+      var info = WMO_MAP[code] || { desc: 'Fair weather', icon: '\uD83C\uDF24\uFE0F' };
+
+      document.getElementById('weather-content').innerHTML =
+        '<div class="weather-main">' +
+          '<span class="weather-icon">' + info.icon + '</span>' +
+          '<span class="weather-temp">' + Math.round(cw.temperature) + '\u00B0C</span>' +
+        '</div>' +
+        '<p class="weather-desc">' + info.desc + ' \u00B7 Wind ' + Math.round(cw.windspeed) + ' km/h</p>';
+    }
+
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=8.7333&longitude=76.7167&current_weather=true')
+      .then(function(r) { return r.json(); })
+      .then(renderWeather)
+      .catch(function() {
+        document.getElementById('weather-content').innerHTML =
+          '<div class="weather-main">' +
+            '<span class="weather-icon">\uD83C\uDF24\uFE0F</span>' +
+            '<span class="weather-temp">30\u00B0C</span>' +
+          '</div>' +
+          '<p class="weather-desc">Warm &amp; sunny \u2014 dress light!</p>';
+      });
+
+    /* ================================================================
+       EXCITEMENT GAME
+       ================================================================ */
+    var TOTAL_TAPS = 60;
+    var THRESHOLDS = [
+      { pct: 25,  outfit: 1, msg: 'Outfit 1 unlocked! Keep tapping!' },
+      { pct: 50,  outfit: 2, msg: 'Outfit 2 unlocked! More to go!' },
+      { pct: 75,  outfit: 3, msg: 'Outfit 3 unlocked! One more!' },
+      { pct: 100, outfit: 4, msg: 'All outfits unlocked!' }
+    ];
+    var tapCount = 0;
+    var revealed = 0;
+    var gameComplete = false;
+
+    var meterMessages = [
+      { min: 0,  max: 12, text: 'Tap tap tap!' },
+      { min: 12, max: 24, text: 'Getting warmer...' },
+      { min: 24, max: 36, text: 'Ooh, the excitement is building!' },
+      { min: 36, max: 48, text: "You're on fire!" },
+      { min: 48, max: 60, text: 'Almost there, keep going!' }
+    ];
+
+    var heartBtn = document.getElementById('tap-heart');
+    var meterFill = document.getElementById('meter-fill');
+    var meterLabel = document.getElementById('meter-label');
+    var meterPct = document.getElementById('meter-pct');
+
+    heartBtn.addEventListener('click', function(e) {
+      if (gameComplete) return;
+
+      tapCount++;
+      if (tapCount > TOTAL_TAPS) tapCount = TOTAL_TAPS;
+
+      var pct = Math.round((tapCount / TOTAL_TAPS) * 100);
+      meterFill.style.width = pct + '%';
+      meterPct.textContent = pct + '%';
+
+      for (var m = 0; m < meterMessages.length; m++) {
+        if (tapCount >= meterMessages[m].min && tapCount < meterMessages[m].max) {
+          meterLabel.textContent = meterMessages[m].text;
+          break;
+        }
+      }
+
+      spawnTapBurst(e);
+      playSound('tap');
+
+      for (var t = 0; t < THRESHOLDS.length; t++) {
+        var th = THRESHOLDS[t];
+        if (pct >= th.pct && revealed < th.outfit) {
+          revealed = th.outfit;
+          revealOutfit(th.outfit);
+          meterLabel.textContent = th.msg;
+          spawnConfettiBurst(e);
+          playSound('unlock');
+
+          if (th.outfit === 4) {
+            gameComplete = true;
+            heartBtn.style.animation = 'none';
+            heartBtn.style.cursor = 'default';
+            heartBtn.style.boxShadow = '0 8px 40px rgba(0, 184, 148, 0.4)';
+            heartBtn.style.background = 'linear-gradient(135deg, #00b894, #00cec9)';
+            heartBtn.textContent = '\u2705';
+
+            setTimeout(function() {
+              var fm = document.getElementById('final-msg');
+              fm.classList.add('visible');
+              var bl = document.getElementById('back-link');
+              bl.style.opacity = '1';
+              bl.style.pointerEvents = 'auto';
+              fm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 800);
+          }
+          break;
+        }
+      }
+    });
+
+    function revealOutfit(num) {
+      var card = document.getElementById('outfit-' + num);
+      card.classList.remove('locked');
+      card.classList.add('revealed');
+      setTimeout(function() {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 200);
+    }
+
+    function spawnTapBurst(e) {
+      var el = document.createElement('span');
+      el.className = 'tap-count-burst';
+      var hearts = ['\u2764\uFE0F', '\uD83D\uDC96', '\uD83D\uDD25', '\u2728', '\uD83D\uDCAB'];
+      el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+      el.style.left = (e.clientX + (Math.random() - 0.5) * 40) + 'px';
+      el.style.top = (e.clientY - 10) + 'px';
+      document.body.appendChild(el);
+      setTimeout(function() { el.remove(); }, 750);
+    }
+
+    function spawnConfettiBurst(e) {
+      var colors = ['#ff6b6b', '#f0932b', '#00b894', '#fd79a8', '#fab1a0',
+                    '#ffeaa7', '#74b9ff', '#a29bfe', '#00cec9'];
+      var cx = e.clientX;
+      var cy = e.clientY;
+
+      for (var i = 0; i < 25; i++) {
+        var dot = document.createElement('div');
+        dot.className = 'mini-confetti';
+        dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+        dot.style.left = cx + 'px';
+        dot.style.top = cy + 'px';
+        var angle = Math.random() * Math.PI * 2;
+        var dist = 60 + Math.random() * 120;
+        dot.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+        dot.style.setProperty('--dy', Math.sin(angle) * dist - 40 + 'px');
+        document.body.appendChild(dot);
+        setTimeout(function(d) { d.remove(); }, 850, dot);
+      }
+    }
+
+    /* ================================================================
+       SOUND EFFECTS (Web Audio API)
+       ================================================================ */
+    var audioCtx = null;
+    var soundEnabled = true;
+
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return audioCtx;
+    }
+
+    function playTone(freq, duration, delay, type) {
+      if (!soundEnabled) return;
+      var ctx = getAudioCtx();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = type || 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.1, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + duration);
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        if (type === 'tap') {
+          playTone(600 + Math.random() * 200, 0.08, 0, 'sine');
+        } else if (type === 'unlock') {
+          playTone(523, 0.1, 0, 'sine');
+          playTone(659, 0.1, 0.1, 'sine');
+          playTone(784, 0.2, 0.2, 'sine');
+        }
+      } catch (e) { /* ignore */ }
+    }
+
+    document.getElementById('mute-toggle').addEventListener('click', function() {
+      soundEnabled = !soundEnabled;
+      this.textContent = soundEnabled ? '\uD83D\uDD0A' : '\uD83D\uDD07';
+    });
+  </script>
+</body>
+</html>

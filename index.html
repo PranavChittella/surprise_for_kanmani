@@ -633,6 +633,32 @@
     }
     .final-msg.visible { opacity: 1; transform: translateY(0); }
 
+    .outfits-link-btn {
+      display: inline-block;
+      margin-top: 2rem;
+      background: linear-gradient(135deg, var(--warm-pink), var(--sunset-1));
+      color: #fff;
+      text-decoration: none;
+      padding: 0.9rem 2.2rem;
+      font-size: 1.05rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      border-radius: 50px;
+      box-shadow: 0 4px 25px rgba(253, 121, 168, 0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .outfits-link-btn.visible {
+      opacity: 1;
+      transform: translateY(0);
+      animation: pulse 2s ease-in-out infinite 0.5s;
+    }
+    .outfits-link-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 35px rgba(253, 121, 168, 0.6);
+    }
+
     /* ── Screen Transitions ── */
     .screen.active {
       animation: screenFadeIn 0.45s ease forwards;
@@ -701,11 +727,11 @@
     <p class="greeting">Hey Kanmani...</p>
     <h1 class="title">Apni kursi ki peti baandh lo&hellip; mausam bigadne wala hai.</h1>
     <p class="subtitle">
-      But first, let's see how well you know us.
-      Answer a few questions, and I'll tell you
-      what to pack for something special.
+      I've got something planned for us&hellip;
+      and here's everything you need to pack
+      for something really special.
     </p>
-    <button class="start-btn" onclick="startQuiz()">Start the Adventure &rarr;</button>
+    <button class="start-btn" onclick="showPacking()">Show Me What to Pack &rarr;</button>
   </section>
 
   <!-- ===================== QUIZ SCREEN ===================== -->
@@ -825,6 +851,10 @@
     <p class="final-msg" data-delay="900">
       Get ready, Kanmani. This is going to be unforgettable. &hearts;
     </p>
+
+    <a href="outfits.html" class="outfits-link-btn" id="outfits-link" data-delay="1100">
+      See Your Date Outfits &rarr;
+    </a>
   </section>
 
   <button class="mute-toggle" id="mute-toggle" title="Toggle sound">🔊</button>
@@ -1592,6 +1622,12 @@
       const finalMsg = document.querySelector('.final-msg');
       const delay = parseInt(finalMsg.dataset.delay, 10) || 0;
       setTimeout(() => finalMsg.classList.add('visible'), delay);
+
+      const outfitsLink = document.getElementById('outfits-link');
+      if (outfitsLink) {
+        const linkDelay = parseInt(outfitsLink.dataset.delay, 10) || 0;
+        setTimeout(() => outfitsLink.classList.add('visible'), linkDelay);
+      }
     }
 
     /* ── Page load: check for active lockout or pending penalty ── */
